@@ -6,12 +6,14 @@ public class ThirdPersonMovement : MonoBehaviour
 {
     [SerializeField] private Transform cam;
     [SerializeField] private CharacterController controller;
-    [SerializeField] private float speed = 6f;
+    [SerializeField] private float speed = 4f;
     [SerializeField] private float turnSmoothTime = 0.1f;
     [SerializeField] private Animator anim;
+    [SerializeField] private GameObject good, devil;
     float turnSmoothVelocity;
     public bool isMoving;
     Vector3 moveVector;
+    public bool isGood = true;
     void Update()
     {
         moveVector = Vector3.zero;
@@ -38,6 +40,7 @@ public class ThirdPersonMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             controller.Move(moveDir.normalized * speed * Time.deltaTime);
+
         }
         else
         {
@@ -57,10 +60,31 @@ public class ThirdPersonMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             anim.SetTrigger("TimeTravel");
+            if (isGood)
+            {
+                Invoke("Good", 1);
+            }
+            else
+            {
+                Invoke("Devil", 1);
+            }
         }
     }
     private void Run()
     {
+        speed = 6f;
         anim.SetBool("Running", true);
+    }
+    private void Good()
+    {
+        devil.SetActive(true);
+        good.SetActive(false);
+        isGood = false;
+    }
+    private void Devil()
+    {
+        devil.SetActive(false);
+        good.SetActive(true);
+        isGood = true;
     }
 }
